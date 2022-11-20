@@ -21,9 +21,32 @@ namespace ExchangeRates.Core.Fetchers
             this._httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Add("apikey", apiKey);
         }
-        public async Task<IConverter> ConvertTwoCurr(string cur1, string cur2)
+        public async Task<IConverter?> ConvertTwoCurrAsync(string cur1, string cur2, decimal amount)
         {
-            throw new NotImplementedException();
+
+            try
+            {
+                var apiCall = await _httpClient.GetAsync(_fixedUrl + $"convert?to={cur2}&from={cur1}&amount={amount}");
+                var asStr = await apiCall.Content.ReadAsStringAsync();
+                var json = JObject.Parse(asStr);
+                var rate = json["info"]!["rate"]!.ToObject<decimal>();
+                var result = json["result"]!.ToObject<decimal>();
+                if (rate <= 0m || result <= 0) return null;
+
+                return new Converter
+                {
+                    FromCurrency = cur1,
+                    ToCurrency = cur2,
+                    Rate = rate,
+                    Result = result
+                };
+
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
         }
 
         public async Task<List<ISymbol>?> FetchAllSymbolsAsync()
@@ -49,7 +72,7 @@ namespace ExchangeRates.Core.Fetchers
         }
 
 
-        public async Task<ILatestPrice?> FetchLatestPrice()
+        public async Task<ILatestPrice?> FetchLatestPriceAsync()
         {
             try
             {
@@ -61,10 +84,12 @@ namespace ExchangeRates.Core.Fetchers
                 if (rat is null) return null;
 
                 var ratAsDic = rat.ToObject<Dictionary<string, decimal>>();
-                var res = new LatestPrice();
-                //curr date formated as year month and day
-                res.Date = DateTime.Now.ToString("yyyy/MM/dd");
-                res.Rates = GenerateRates(ratAsDic);
+                var res = new LatestPrice
+                {
+                    //curr date formated as year month and day
+                    Date = DateTime.Now.ToString("yyyy/MM/dd"),
+                    Rates = GenerateRates(ratAsDic)
+                };
 
                 return res;
             }

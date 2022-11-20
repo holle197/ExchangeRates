@@ -11,6 +11,7 @@ namespace ExchangeRates.Core.Currencies.Converters
         public string FromCurrency { get; set; } = string.Empty;
         public string ToCurrency { get; set; } = string.Empty;
         public decimal Rate { get; set; }
+        public decimal Result { get; set; }
         public string GetFromCurr()
         {
             return FromCurrency;
@@ -24,6 +25,11 @@ namespace ExchangeRates.Core.Currencies.Converters
         public string GetToCurr()
         {
             return ToCurrency;
+        }
+
+        public decimal GetResult()
+        {
+            return Result;
         }
     }
 }

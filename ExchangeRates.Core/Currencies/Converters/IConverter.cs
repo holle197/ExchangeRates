@@ -11,6 +11,7 @@ namespace ExchangeRates.Core.Currencies.Converters
         string GetFromCurr();
         string GetToCurr();
         decimal GetRate();
+        decimal GetResult();
 
     }
 }
