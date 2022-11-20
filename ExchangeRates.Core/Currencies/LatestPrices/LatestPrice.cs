@@ -8,9 +8,9 @@ namespace ExchangeRates.Core.Currencies.LatestPrices
 {
     internal class LatestPrice : ILatestPrice
     {
-        public string BaseCurrency { get; set; } = string.Empty;
+        public string BaseCurrency { get; set; } = "USD";
         public string Date { get; set; } = string.Empty;
-        public List<IRate> Rates { get; set; } = new();
+        public List<IRate>? Rates { get; set; } = new();
         public string GetBase()
         {
             return BaseCurrency;
@@ -21,8 +21,9 @@ namespace ExchangeRates.Core.Currencies.LatestPrices
             return Date;
         }
 
-        public List<IRate> GetRates()
+        public List<IRate>? GetRates()
         {
+            if (Rates is null) return null;
             return Rates;
         }
     }

@@ -4,6 +4,7 @@ using ExchangeRates.Core.Currencies.Symbols;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,6 +34,7 @@ namespace ExchangeRates.Core.Fetchers
                 var asStr = await apiCall.Content.ReadAsStringAsync();
                 var json = JObject.Parse(asStr);
                 var sym = json["symbols"];
+
                 if (sym is null) return null;
 
                 var symAsDic = sym.ToObject<Dictionary<string, string>>();
@@ -46,29 +48,66 @@ namespace ExchangeRates.Core.Fetchers
             }
         }
 
-        public async Task<ILatestPrice> FetchLatestPrice()
+
+        public async Task<ILatestPrice?> FetchLatestPrice()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var apiCall = await _httpClient.GetAsync(_fixedUrl + "latest?base=USD");
+                var asStr = await apiCall.Content.ReadAsStringAsync();
+                var json = JObject.Parse(asStr);
+                var rat = json["rates"];
+
+                if (rat is null) return null;
+
+                var ratAsDic = rat.ToObject<Dictionary<string, decimal>>();
+                var res = new LatestPrice();
+                //curr date formated as year month and day
+                res.Date = DateTime.Now.ToString("yyyy/MM/dd");
+                res.Rates = GenerateRates(ratAsDic);
+
+                return res;
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+
         }
-
-
 
 
         private static List<ISymbol>? GenerateSymbols(Dictionary<string, string>? symbolsAsDic)
         {
-            if (symbolsAsDic == null) return null;
+            if (symbolsAsDic is null) return null;
 
             var res = new List<ISymbol>();
             foreach (var i in symbolsAsDic)
             {
-                var symbol = new Symbol
+                res.Add(new Symbol
                 {
                     CurrencySymbol = i.Key,
                     CurrencyName = i.Value
-                };
-                res.Add(symbol);
+                });
             }
             return res;
         }
+
+        private static List<IRate>? GenerateRates(Dictionary<string, decimal>? ratesAsDic)
+        {
+            if (ratesAsDic is null) return null;
+            var res = new List<IRate>();
+            foreach (var i in ratesAsDic)
+            {
+                res.Add(new Rate
+                {
+                    CurrencySymbol = i.Key,
+                    CurrencyRate = i.Value
+                });
+            }
+            return res;
+        }
+
+
     }
 }

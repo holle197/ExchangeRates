@@ -17,6 +17,6 @@ namespace ExchangeRates.Core.Fetchers
         /// Fetch all prices(rates) based on USD
         /// </summary>
         /// <returns>ILatestPrice</returns>
-        Task<ILatestPrice> FetchLatestPrice();
+        Task<ILatestPrice?> FetchLatestPrice();
     }
 }

@@ -22,5 +22,18 @@ namespace ExchangeRates.Test.CoreTesting.FetchersTesting
             Assert.NotNull(res);
             Assert.True(res?.Count > 0);
         }
+
+
+        [Fact]
+        public async Task FetchLatestPrices_OnSuccess_ExpectILatestPrice()
+        {
+            var apikey = "nQ79FQEm879L7xHxyPORbMD6PPofZMvk";
+            var fetcher = new FixerFetcher(apikey);
+
+            var res = await fetcher.FetchLatestPrice();
+
+            Assert.NotNull(res);
+            Assert.True(res?.GetRates()?.Count > 0);
+        }
     }
 }
