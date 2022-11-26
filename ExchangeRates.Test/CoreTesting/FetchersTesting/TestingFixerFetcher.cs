@@ -42,12 +42,13 @@ namespace ExchangeRates.Test.CoreTesting.FetchersTesting
             var apikey = "nQ79FQEm879L7xHxyPORbMD6PPofZMvk";
             var fetcher = new FixerFetcher(apikey);
 
-            var res = await fetcher.ConvertTwoCurrAsync("USD","EUR",2.4m);
+            var res = await fetcher.ConvertTwoCurrAsync("USD", "EUR", 2.4m);
 
             Assert.NotNull(res);
             Assert.True(res?.GetRate() > 0m);
             Assert.True(res?.GetResult() > 0m);
 
         }
+
     }
 }
