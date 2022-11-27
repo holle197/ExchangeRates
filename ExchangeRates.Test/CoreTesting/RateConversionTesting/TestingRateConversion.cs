@@ -65,6 +65,15 @@ namespace ExchangeRates.Test.CoreTesting.RateConversionTesting
         }
 
         [Fact]
+        public void ConvertWithMiddlePrice_OnSuccess_ExpectDecimal_1()
+        {
+            var rates = RatesHelper.GenerateRates();
+            var middlePrice = OfflineRateConversion.GenerateMiddlePrice(rates, "RSD", "USD", 112.64m);
+
+            Assert.True(middlePrice == 1m);
+        }
+
+        [Fact]
         public void ConvertWithMiddlePrice_OnSuccess_ExpectDecimal_117_33()
         {
             var rates = RatesHelper.GenerateRates();
