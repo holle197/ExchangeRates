@@ -1,4 +1,6 @@
+using ExchangeRates.Core.Fetchers;
 using ExchangeRates.Data.DataContext;
+using ExchangeRates.Data.DataManaging;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,8 @@ builder.Services.AddDbContext<DbDataContext>
     (
         d => d.UseNpgsql(builder.Configuration.GetConnectionString("ExchangeRatesDb"))
     );
+builder.Services.AddScoped<IDataManager,DataManager>();
+builder.Services.AddSingleton<IFetcher, FixerFetcher>();
 
 var app = builder.Build();
 

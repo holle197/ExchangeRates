@@ -21,6 +21,11 @@ namespace ExchangeRates.Core.Fetchers
             this._httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Add("apikey", apiKey);
         }
+        public FixerFetcher()
+        {
+            this._httpClient = new HttpClient();
+            _httpClient.DefaultRequestHeaders.Add("apikey", "nQ79FQEm879L7xHxyPORbMD6PPofZMvk");
+        }
         public async Task<IConverter?> ConvertTwoCurrAsync(string cur1, string cur2, decimal amount)
         {
 
