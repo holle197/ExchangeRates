@@ -18,6 +18,8 @@ builder.Services.AddDbContext<DbDataContext>
 builder.Services.AddScoped<IDataManager,DataManager>();
 builder.Services.AddSingleton<IFetcher, FixerFetcher>();
 
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

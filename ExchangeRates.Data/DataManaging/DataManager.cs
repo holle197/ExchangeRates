@@ -2,6 +2,7 @@
 using ExchangeRates.Data.Currencies;
 using ExchangeRates.Data.DataContext;
 using ExchangeRates.Data.ExchangeRates;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,43 +26,62 @@ namespace ExchangeRates.Data.DataManaging
             return currencies;
         }
 
-        public Task<bool> AddDailyRates()
+        public async Task AddDailyRates(List<DailyRate> rates)
         {
-            throw new NotImplementedException();
+            _dataContext.DailyRates.AddRange(rates);
+            AddApiCallRegister();
+            await _dataContext.SaveChangesAsync();
         }
 
-        public Task<ExchangeRate> AddExchangeRate(ExchangeRate exchangeRate)
+        public async Task<ExchangeRate> AddExchangeRate(ExchangeRate exchangeRate)
         {
-            throw new NotImplementedException();
+            _dataContext.Add(exchangeRate);
+            AddApiCallRegister();
+            await _dataContext.SaveChangesAsync();
+            return exchangeRate;
         }
 
-        public Task<bool> CheckIfSymbolExist(string sym)
+        public async Task<bool> CheckIfSymbolExist(string sym)
         {
-            throw new NotImplementedException();
+            var res = await _dataContext.Currencies.Where(s => s.Symbol == sym).FirstOrDefaultAsync();
+            return res != null;
         }
 
-        public Task<DailyRate?> GetDailyRate(string cur1, string cur2)
+        public async Task<List<DailyRate>?> GetDailyRates()
         {
-            throw new NotImplementedException();
+            var today = DateTime.Now.ToString("yyyy/MM/dd");
+            var rates = await _dataContext.DailyRates.Where(r=>r.Date == today).ToListAsync();
+
+            if (rates is null || rates.Count == 0) return null;
+            return rates;
         }
 
-        public Task<ExchangeRate?> GetExchangeRate(string fromCur, string toCur)
+        //for now,work only in one direction FROM -> To
+        public async Task<ExchangeRate?> GetExchangeRate(string fromCur, string toCur)
         {
-            throw new NotImplementedException();
+            var rates = await _dataContext.ExchangeRates.Where(r => r.FromCur == fromCur && r.ToCur == toCur).ToListAsync();
+            var today = DateTime.Now.ToString("yyyy/MM/dd");
+            if (rates is null || rates.Count == 0) return null;
+            foreach (var rate in rates)
+            {
+                if (rate.Date == today) return rate;
+            }
+
+            return null;
         }
 
-        public List<Currency>? GetSupportedCurrencies()
+        public async Task<List<Currency>?> GetSupportedCurrencies()
         {
-            var res = _dataContext.Currencies.ToList();
+            var res = await _dataContext.Currencies.ToListAsync();
             if (res is null || res.Count <= 0) return null;
             return res;
         }
 
-        public int GetTotalApiCalls()
+        public async Task<int> GetTotalApiCalls()
         {
             var currDate = DateTime.Now.ToString("MMMM yyyy");
-            var total = _dataContext.ApiCallManager.Where(t => t.Date == currDate).ToList();
-            return total?.Count() ?? 0;
+            var total = await _dataContext.ApiCallManager.Where(t => t.Date == currDate).ToListAsync();
+            return total?.Count ?? 0;
         }
 
 

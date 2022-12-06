@@ -12,16 +12,16 @@ namespace ExchangeRates.Data.DataManaging
     public interface IDataManager
     {
         Task<List<Currency>> AddCurrencies(List<Currency> currencies);
-        List<Currency>? GetSupportedCurrencies();
+        Task<List<Currency>?> GetSupportedCurrencies();
         Task<bool> CheckIfSymbolExist(string sym);
 
         Task<ExchangeRate> AddExchangeRate(ExchangeRate exchangeRate);
         Task<ExchangeRate?> GetExchangeRate(string fromCur,string toCur);
 
-        Task<bool> AddDailyRates();
-        Task<DailyRate?> GetDailyRate(string cur1,string cur2);
+        Task AddDailyRates(List<DailyRate> rates);
+        Task<List<DailyRate>?> GetDailyRates();
 
-        int GetTotalApiCalls();
+        Task<int> GetTotalApiCalls();
 
     }
 }
