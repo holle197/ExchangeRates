@@ -15,8 +15,8 @@ builder.Services.AddDbContext<DbDataContext>
     (
         d => d.UseNpgsql(builder.Configuration.GetConnectionString("ExchangeRatesDb"))
     );
-builder.Services.AddScoped<IDataManager,DataManager>();
-builder.Services.AddSingleton<IFetcher, FixerFetcher>();
+builder.Services.AddScoped<IDataManager, DataManager>();
+builder.Services.AddSingleton<IFetcher>(opt =>new FixerFetcher(builder.Configuration.GetValue<string>("ApiURLS:FixerUrls:APIKey"), builder.Configuration.GetValue<string>("ApiURLS:FixerUrls:URL")));
 
 
 

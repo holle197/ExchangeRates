@@ -14,17 +14,20 @@ namespace ExchangeRates.Core.Fetchers
     public class FixerFetcher : IFetcher
     {
         private readonly HttpClient _httpClient;
-        private const string _fixedUrl = "https://api.apilayer.com/fixer/";
-
-        public FixerFetcher(string apiKey)
+        private readonly string _fixedUrl;
+        public FixerFetcher(string apiKey,string url)
         {
             this._httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Add("apikey", apiKey);
+            this._fixedUrl = url;
         }
+
+        // this constructor is for testing only
         public FixerFetcher()
         {
             this._httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Add("apikey", "nQ79FQEm879L7xHxyPORbMD6PPofZMvk");
+            this._fixedUrl = "https://api.apilayer.com/fixer/";
         }
         public async Task<IConverter?> ConvertTwoCurrAsync(string cur1, string cur2, decimal amount)
         {
