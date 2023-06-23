@@ -53,7 +53,7 @@ namespace ExchangeRates.Core.Fetchers
             catch (Exception)
             {
 
-                return null;
+                throw;
             }
         }
 
@@ -75,7 +75,7 @@ namespace ExchangeRates.Core.Fetchers
             catch (Exception)
             {
 
-                return null;
+                throw;
             }
         }
 
@@ -104,7 +104,7 @@ namespace ExchangeRates.Core.Fetchers
             catch (Exception)
             {
 
-                return null;
+                throw;
             }
 
         }

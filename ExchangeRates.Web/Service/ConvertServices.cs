@@ -40,7 +40,7 @@ namespace ExchangeRates.Web.Service
             if (await HaveEnoughFreeApiCalls())
             {
                 var rate = await _fetcher.ConvertTwoCurrAsync(from, to, amount);
-                if (rate is null) return new ExchangeRateModel() { ErrorMsg = "InternalServerError" };
+                //if (rate is null) return new ExchangeRateModel() { ErrorMsg = "InternalServerError" };
                 return await ConvertFromFetcher(rate, amount);
             }
 
@@ -50,7 +50,7 @@ namespace ExchangeRates.Web.Service
             {
                 var latestPrices = await _fetcher.FetchLatestPriceAsync();
                 var rates = latestPrices?.GetRates();
-                if (rates is null) return new ExchangeRateModel() { ErrorMsg = "InternalServerError" };
+                //if (rates is null) return new ExchangeRateModel() { ErrorMsg = "InternalServerError" };
                 var res = IRatesToDailyRate.Convert(rates);
                 await _dataManager.AddDailyRates(res);
                 return ConvertFromDbDailyRates(res, from, to, amount);
