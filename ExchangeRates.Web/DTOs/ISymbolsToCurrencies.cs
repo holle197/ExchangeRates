@@ -23,8 +23,8 @@ namespace ExchangeRates.Web.DTOs
         {
             return new Currency()
             {
-                Name = sym.GetCurName(),
-                Symbol = sym.GetCurSym(),
+                Name = sym.GetCurrencyName(),
+                Symbol = sym.GetCurrencySymbol(),
             };
         }
 

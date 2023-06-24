@@ -8,8 +8,8 @@ namespace ExchangeRates.Core.Currencies.Converters
 {
     public interface IConverter
     {
-        string GetFromCurr();
-        string GetToCurr();
+        string GetFromCurrency();
+        string GetToCurrency();
         decimal GetRate();
         decimal GetResult();
 

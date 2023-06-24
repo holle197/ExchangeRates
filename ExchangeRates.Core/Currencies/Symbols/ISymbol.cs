@@ -13,12 +13,12 @@ namespace ExchangeRates.Core.Currencies.Symbols
         /// Get Currency symbol like USD , EUR etc...
         /// </summary>
         /// <returns>string</returns>
-        string GetCurSym();
+        string GetCurrencySymbol();
 
         /// <summary>
         /// Get Currency full name like United States Dollar
         /// </summary>
         /// <returns>string</returns>
-        string GetCurName();
+        string GetCurrencyName();
     }
 }

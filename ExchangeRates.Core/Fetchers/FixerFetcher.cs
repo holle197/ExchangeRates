@@ -29,12 +29,12 @@ namespace ExchangeRates.Core.Fetchers
             _httpClient.DefaultRequestHeaders.Add("apikey", "nQ79FQEm879L7xHxyPORbMD6PPofZMvk");
             this._fixedUrl = "https://api.apilayer.com/fixer/";
         }
-        public async Task<IConverter?> ConvertTwoCurrAsync(string cur1, string cur2, decimal amount)
+        public async Task<IConverter?> Convert(string fromCurr, string toCurr, decimal amount)
         {
 
             try
             {
-                var apiCall = await _httpClient.GetAsync(_fixedUrl + $"convert?to={cur2}&from={cur1}&amount={amount}");
+                var apiCall = await _httpClient.GetAsync(_fixedUrl + $"convert?to={toCurr}&from={fromCurr}&amount={amount}");
                 var asStr = await apiCall.Content.ReadAsStringAsync();
                 var json = JObject.Parse(asStr);
                 var rate = json["info"]!["rate"]!.ToObject<decimal>();
@@ -43,8 +43,8 @@ namespace ExchangeRates.Core.Fetchers
 
                 return new Converter
                 {
-                    FromCurrency = cur1,
-                    ToCurrency = cur2,
+                    FromCurrency = fromCurr,
+                    ToCurrency = toCurr,
                     Rate = rate,
                     Result = result
                 };

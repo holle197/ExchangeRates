@@ -14,8 +14,7 @@ namespace ExchangeRates.Test.CoreTesting.FetchersTesting
 
         public async Task FetchSymbols_OnSuccess_ReturnsISymbols()
         {
-            var apikey = "nQ79FQEm879L7xHxyPORbMD6PPofZMvk";
-            var fetcher = new FixerFetcher(apikey);
+            var fetcher = new FixerFetcher();
 
             var res = await fetcher.FetchAllSymbolsAsync();
 
@@ -27,8 +26,7 @@ namespace ExchangeRates.Test.CoreTesting.FetchersTesting
         [Fact]
         public async Task FetchLatestPrices_OnSuccess_ReturnILatestPrice()
         {
-            var apikey = "nQ79FQEm879L7xHxyPORbMD6PPofZMvk";
-            var fetcher = new FixerFetcher(apikey);
+            var fetcher = new FixerFetcher();
 
             var res = await fetcher.FetchLatestPriceAsync();
 
@@ -39,10 +37,9 @@ namespace ExchangeRates.Test.CoreTesting.FetchersTesting
         [Fact]
         public async Task ConvertTwoCurr_OnSuccess_ReturnsIConvert()
         {
-            var apikey = "nQ79FQEm879L7xHxyPORbMD6PPofZMvk";
-            var fetcher = new FixerFetcher(apikey);
+            var fetcher = new FixerFetcher();
 
-            var res = await fetcher.ConvertTwoCurrAsync("USD", "EUR", 2.4m);
+            var res = await fetcher.Convert("USD", "EUR", 2.4m);
 
             Assert.NotNull(res);
             Assert.True(res?.GetRate() > 0m);

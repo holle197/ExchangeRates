@@ -9,8 +9,8 @@ namespace ExchangeRates.Web.DTOs
         {
             return new ExchangeRate()
             {
-                FromCur = converter.GetFromCurr(),
-                ToCur = converter.GetToCurr(),
+                FromCur = converter.GetFromCurrency(),
+                ToCur = converter.GetToCurrency(),
                 Rate = converter.GetRate(),
             };
         }

@@ -11,12 +11,12 @@ namespace ExchangeRates.Web.DTOs
             var res = new List<CurrencyModel>();
             foreach (var currency in currencies)
             {
-                res.Add(CurToCurModel(currency));
+                res.Add(CurrencyToCurrencyModel(currency));
             }
             return res;
         }
 
-        private static CurrencyModel CurToCurModel(Currency cur)
+        private static CurrencyModel CurrencyToCurrencyModel(Currency cur)
         {
             return new CurrencyModel()
             {

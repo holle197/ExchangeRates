@@ -12,7 +12,7 @@ namespace ExchangeRates.Core.RateConversion
     {
         //Method for direct conversion between 2 cur if pair is in DB
         //cannot be used for reverse conversion USD -> RSD     RSD -> USD 
-        public static decimal? ConvertBetweenTwoCur(decimal rate, decimal amount)
+        public static decimal? ConvertBetweenTwoCurencies(decimal rate, decimal amount)
         {
             return rate * amount > 0m ? rate * amount : null;
         }

@@ -17,6 +17,7 @@ namespace ExchangeRates.Web.Middlewares
                 ProblemDetails problem = new();
                 switch (e)
                 {
+                    //in future, add specific exception with specific ProblemDetails properies
 
                     default:
                         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;

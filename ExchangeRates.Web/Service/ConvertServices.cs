@@ -22,10 +22,10 @@ namespace ExchangeRates.Web.Service
         {
             from = from.ToUpper();
             to = to.ToUpper();
-            bool chechValidationOfInpParams = await IsInpParamsValid(from, to, amount);
+            bool chechValidationOfInpParams = await IsInputParametersValid(from, to, amount);
             if (chechValidationOfInpParams == false)
             {
-                return new ExchangeRateModel() { Success = false, ErrorMsg = "InvalidParameters" };
+                return new ExchangeRateModel() { Success = false, ErrorMessage = "InvalidParameters" };
             }
 
             // db have current exchange rate for given pair and time of fetched data is not older than 1 day
@@ -39,7 +39,7 @@ namespace ExchangeRates.Web.Service
             //there are enough free api calls so user can get direct exchange rate
             if (await HaveEnoughFreeApiCalls())
             {
-                var rate = await _fetcher.ConvertTwoCurrAsync(from, to, amount);
+                var rate = await _fetcher.Convert(from, to, amount);
                 //if (rate is null) return new ExchangeRateModel() { ErrorMsg = "InternalServerError" };
                 return await ConvertFromFetcher(rate, amount);
             }
@@ -60,7 +60,7 @@ namespace ExchangeRates.Web.Service
             return ConvertFromDbDailyRates(dailyRates, from, to, amount);
         }
 
-        private async Task<bool> IsInpParamsValid(string from, string to, decimal amount)
+        private async Task<bool> IsInputParametersValid(string from, string to, decimal amount)
         {
             bool validateFromCur = await _dataManager.CheckIfSymbolExist(from);
             bool validateToCur = await _dataManager.CheckIfSymbolExist(to);
@@ -73,7 +73,7 @@ namespace ExchangeRates.Web.Service
 
         private ExchangeRateModel ConvertFromDb(ExchangeRate exchangeRate, decimal amount)
         {
-            var total = OfflineRateConversion.ConvertBetweenTwoCur(exchangeRate.Rate, amount);
+            var total = OfflineRateConversion.ConvertBetweenTwoCurencies(exchangeRate.Rate, amount);
 
             var result = ExchangeRateToExchangeRateModel.Convert(exchangeRate);
             result.Success = true;
@@ -128,8 +128,8 @@ namespace ExchangeRates.Web.Service
             return new ExchangeRateModel()
             {
                 Success = true,
-                From = from,
-                To = to,
+                FromCurrency = from,
+                ToCurrency = to,
                 Amount = amount,
                 Rate = result / amount ?? 0,
                 Result = result ?? 0,

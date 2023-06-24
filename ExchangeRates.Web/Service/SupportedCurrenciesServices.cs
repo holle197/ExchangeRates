@@ -35,7 +35,7 @@ namespace ExchangeRates.Web.Service
             var allCurrencies = await _fetcher.FetchAllSymbolsAsync();
             if (allCurrencies is null)
             {
-                return new CurrenciesModel() { Success = false, ErrorMsg = "InternalServerError" };
+                return new CurrenciesModel() { Success = false, ErrorMessage = "InternalServerError" };
             }
             var currencies = ISymbolsToCurrencies.Convert(allCurrencies);
             await _dataManager.AddCurrencies(currencies);

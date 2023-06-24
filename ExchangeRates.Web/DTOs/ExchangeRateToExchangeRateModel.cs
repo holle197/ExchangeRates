@@ -9,8 +9,8 @@ namespace ExchangeRates.Web.DTOs
         {
             return new ExchangeRateModel()
             {
-                From = exchangeRate.FromCur,
-                To = exchangeRate.ToCur,
+                FromCurrency = exchangeRate.FromCur,
+                ToCurrency = exchangeRate.ToCur,
                 Rate = exchangeRate.Rate,
             };
         }

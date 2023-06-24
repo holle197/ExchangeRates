@@ -16,7 +16,7 @@ namespace ExchangeRates.Test.CoreTesting.RateConversionTesting
         [Fact]
         public void ConvertBetweenTwoCur_OnSuccess_ExpectDecimal_100()
         {
-            var res = OfflineRateConversion.ConvertBetweenTwoCur(10m, 10m);
+            var res = OfflineRateConversion.ConvertBetweenTwoCurencies(10m, 10m);
 
             Assert.True(res == 100);
         }
@@ -24,7 +24,7 @@ namespace ExchangeRates.Test.CoreTesting.RateConversionTesting
         [Fact]
         public void ConvertBetweenTwoCur_OnFailureZeroRate_ExpectNull()
         {
-            var res = OfflineRateConversion.ConvertBetweenTwoCur(0m, 10m);
+            var res = OfflineRateConversion.ConvertBetweenTwoCurencies(0m, 10m);
 
             Assert.Null(res);
         }
@@ -32,7 +32,7 @@ namespace ExchangeRates.Test.CoreTesting.RateConversionTesting
         [Fact]
         public void ConvertBetweenTwoCur_OnFailureNegativeRate_ExpectNull()
         {
-            var res = OfflineRateConversion.ConvertBetweenTwoCur(-10m, 10m);
+            var res = OfflineRateConversion.ConvertBetweenTwoCurencies(-10m, 10m);
 
             Assert.Null(res);
         }
@@ -41,7 +41,7 @@ namespace ExchangeRates.Test.CoreTesting.RateConversionTesting
         [Fact]
         public void ConvertBetweenTwoCur_OnFailureZeroAmount_ExpectNull()
         {
-            var res = OfflineRateConversion.ConvertBetweenTwoCur(10m, 0m);
+            var res = OfflineRateConversion.ConvertBetweenTwoCurencies(10m, 0m);
 
             Assert.Null(res);
         }
@@ -49,7 +49,7 @@ namespace ExchangeRates.Test.CoreTesting.RateConversionTesting
         [Fact]
         public void ConvertBetweenTwoCur_OnFailureNegativeAmount_ExpectNull()
         {
-            var res = OfflineRateConversion.ConvertBetweenTwoCur(10m, -0.1m);
+            var res = OfflineRateConversion.ConvertBetweenTwoCurencies(10m, -0.1m);
 
             Assert.Null(res);
         }

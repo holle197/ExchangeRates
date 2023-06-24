@@ -12,7 +12,7 @@ namespace ExchangeRates.Core.Fetchers
     public interface IFetcher
     {
         Task<List<ISymbol>?> FetchAllSymbolsAsync();
-        Task<IConverter?> ConvertTwoCurrAsync(string cur1,string cur2,decimal amount);
+        Task<IConverter?> Convert(string cur1,string cur2,decimal amount);
         /// <summary>
         /// Fetch all prices(rates) based on USD
         /// </summary>

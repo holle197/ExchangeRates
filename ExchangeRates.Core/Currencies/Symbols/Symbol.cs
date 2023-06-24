@@ -12,12 +12,12 @@ namespace ExchangeRates.Core.Currencies.Symbols
         public string CurrencySymbol { get; set; } =string.Empty;
         public string CurrencyName { get; set; } = string.Empty;
 
-        public string GetCurName()
+        public string GetCurrencyName()
         {
             return CurrencyName;
         }
 
-        public string GetCurSym()
+        public string GetCurrencySymbol()
         {
             return CurrencySymbol;
         }
