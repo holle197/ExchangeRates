@@ -1,5 +1,6 @@
 ﻿using ExchangeRates.Core.Currencies.Converters;
 using ExchangeRates.Core.Currencies.LatestPrices;
+using ExchangeRates.Core.ErrorHandling;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,18 +13,18 @@ namespace ExchangeRates.Core.RateConversion
     {
         //Method for direct conversion between 2 cur if pair is in DB
         //cannot be used for reverse conversion USD -> RSD     RSD -> USD 
-        public static decimal? ConvertBetweenTwoCurencies(decimal rate, decimal amount)
+        public static decimal ConvertBetweenTwoCurencies(decimal rate, decimal amount)
         {
-            return rate * amount > 0m ? rate * amount : null;
+            return rate * amount > 0m ? rate * amount : throw new ConversingException("Rate And Amount Must Be Great Than 0.");
         }
 
         //Method for conversion between 2 cur from DB with daily USD based rates
         //can be used for reverse conversion USD -> RSD   and RSD -> USD
-        public static decimal? GenerateMiddlePrice(List<IRate>? rates, string fromCur, string toCur, decimal Amount)
+        public static decimal GenerateMiddlePrice(List<IRate> rates, string fromCur, string toCur, decimal Amount)
         {
-            if (rates is null) return null;
             //check if symbols are valid and amount is great than 0
-            if (!ValidateSymbols(rates, fromCur, toCur) || Amount <= 0) return null;
+            ValidateSymbols(rates, fromCur, toCur);
+            if (Amount <= 0m) throw new ConversingException("Amount Must Be Greather Than 0.");
 
             if (fromCur == "USD")
             {
@@ -40,29 +41,29 @@ namespace ExchangeRates.Core.RateConversion
             return rate2 / rate1 * Amount;
         }
 
-        private static bool ValidateSymbols(List<IRate>? rates, string sym1, string sym2)
+        private static void ValidateSymbols(List<IRate> rates, string sym1, string sym2)
         {
-            if (sym1 == sym2) return false;
+            if (sym1 == sym2) throw new ConversingException("Cannot Exchange The Same Currency. Currency1 Are The Same As Currency2.");
 
-            else if (rates is null) return false;
 
-            else if (sym1 == "USD") return rates.Any(r => r.GetSymbol() == sym2);
+            else if (sym1 == "USD" && CheckSymbolExists(rates, sym2)) return;
 
-            else if (sym2 == "USD") return rates.Any(r => r.GetSymbol() == sym1);
+            else if (sym2 == "USD" && CheckSymbolExists(rates, sym1)) return;
             //check if both sym1 and sym2 exists in list of IRate 
-            else if (rates.Any(r => r.GetSymbol() == sym1) && rates.Any(r => r.GetSymbol() == sym2)) return true;
-
-            return false;
+            else if (CheckSymbolExists(rates, sym1) && CheckSymbolExists(rates, sym2)) return ;
+            throw new ConversingException("Symbol Does Not Exists.");
         }
 
-        private static decimal GetRate(List<IRate>? rates, string symbol)
+        private static decimal GetRate(List<IRate> rates, string symbol)
         {
-            if (rates is not null)
-            {
-                var rate = rates.Where(rate => rate.GetSymbol() == symbol).FirstOrDefault();
-                if (rate is not null) return rate.GetRate();
-            }
-            return 0m;
+            var rate = rates.Where(rate => rate.GetSymbol() == symbol).FirstOrDefault();
+            //cannot be null, all checks are in CheckSymbolExists()
+             return rate!.GetRate();          
+        }
+
+        private static bool CheckSymbolExists(List<IRate> rates,string symbol)
+        {
+            return rates.Any(r => r.GetSymbol() == symbol);
         }
 
 

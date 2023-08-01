@@ -16,6 +16,6 @@ namespace ExchangeRates.Core.Currencies.LatestPrices
         /// List of all currencies with rates based on BASE currency
         /// </summary>
         /// <returns></returns>
-        List<IRate>? GetRates();
+        List<IRate> GetRates();
     }
 }

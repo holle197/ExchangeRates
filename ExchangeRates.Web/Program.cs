@@ -1,4 +1,5 @@
 using ExchangeRates.Core.Fetchers;
+using ExchangeRates.Core.Fetchers.Fixer;
 using ExchangeRates.Data.DataContext;
 using ExchangeRates.Data.DataManaging;
 using ExchangeRates.Web.Middlewares;

@@ -13,21 +13,16 @@ namespace ExchangeRates.Web.Service
         private readonly IFetcher _fetcher;
         private readonly IDataManager _dataManager;
 
-        public ConvertServices(IFetcher fetcher,IDataManager dataManager)
+        public ConvertServices(IFetcher fetcher, IDataManager dataManager)
         {
             this._fetcher = fetcher;
             this._dataManager = dataManager;
         }
-        public async Task<ExchangeRateModel> Convert(string from,string to,decimal amount)
+        public async Task<ExchangeRateModel> Convert(string from, string to, decimal amount)
         {
+
             from = from.ToUpper();
             to = to.ToUpper();
-            bool chechValidationOfInpParams = await IsInputParametersValid(from, to, amount);
-            if (chechValidationOfInpParams == false)
-            {
-                return new ExchangeRateModel() { Success = false, ErrorMessage = "InvalidParameters" };
-            }
-
             // db have current exchange rate for given pair and time of fetched data is not older than 1 day
             var rateFromDb = await _dataManager.GetExchangeRate(from, to);
             if (rateFromDb is not null)
@@ -39,8 +34,7 @@ namespace ExchangeRates.Web.Service
             //there are enough free api calls so user can get direct exchange rate
             if (await HaveEnoughFreeApiCalls())
             {
-                var rate = await _fetcher.Convert(from, to, amount);
-                //if (rate is null) return new ExchangeRateModel() { ErrorMsg = "InternalServerError" };
+                var rate = await _fetcher.ConvertAsync(from, to, amount);
                 return await ConvertFromFetcher(rate, amount);
             }
 
@@ -49,8 +43,7 @@ namespace ExchangeRates.Web.Service
             if (dailyRates is null)
             {
                 var latestPrices = await _fetcher.FetchLatestPriceAsync();
-                var rates = latestPrices?.GetRates();
-                //if (rates is null) return new ExchangeRateModel() { ErrorMsg = "InternalServerError" };
+                var rates = latestPrices.GetRates();
                 var res = IRatesToDailyRate.Convert(rates);
                 await _dataManager.AddDailyRates(res);
                 return ConvertFromDbDailyRates(res, from, to, amount);
@@ -60,25 +53,15 @@ namespace ExchangeRates.Web.Service
             return ConvertFromDbDailyRates(dailyRates, from, to, amount);
         }
 
-        private async Task<bool> IsInputParametersValid(string from, string to, decimal amount)
-        {
-            bool validateFromCur = await _dataManager.CheckIfSymbolExist(from);
-            bool validateToCur = await _dataManager.CheckIfSymbolExist(to);
-            bool validateAmount = amount > 0m;
-            bool fromIsDifThanTo = from != to;
+       
 
-            if (validateFromCur && validateToCur && validateAmount && fromIsDifThanTo) return true;
-            return false;
-        }
-
-        private ExchangeRateModel ConvertFromDb(ExchangeRate exchangeRate, decimal amount)
+        private static ExchangeRateModel ConvertFromDb(ExchangeRate exchangeRate, decimal amount)
         {
             var total = OfflineRateConversion.ConvertBetweenTwoCurencies(exchangeRate.Rate, amount);
 
             var result = ExchangeRateToExchangeRateModel.Convert(exchangeRate);
             result.Success = true;
-            //cannot be null,all checks passed
-            result.Result = total ?? 0;
+            result.Result = total;
             result.Amount = amount;
             result.LatesUpdate = DateTime.Now.ToString("yyyy/MM/dd");
 
@@ -121,7 +104,7 @@ namespace ExchangeRates.Web.Service
         }
 
 
-        private ExchangeRateModel ConvertFromDbDailyRates(List<DailyRate> dailyRates, string from, string to, decimal amount)
+        private static ExchangeRateModel ConvertFromDbDailyRates(List<DailyRate> dailyRates, string from, string to, decimal amount)
         {
             var dailyRateToIRate = RateToIRate.Convert(dailyRates);
             var result = OfflineRateConversion.GenerateMiddlePrice(dailyRateToIRate, from, to, amount);
@@ -131,8 +114,8 @@ namespace ExchangeRates.Web.Service
                 FromCurrency = from,
                 ToCurrency = to,
                 Amount = amount,
-                Rate = result / amount ?? 0,
-                Result = result ?? 0,
+                Rate = result / amount,
+                Result = result,
                 LatesUpdate = DateTime.Now.ToString("yyyy/MM/dd")
             };
         }

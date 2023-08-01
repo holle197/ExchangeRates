@@ -1,4 +1,5 @@
 ﻿using ExchangeRates.Core.Fetchers;
+using ExchangeRates.Core.Fetchers.Fixer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +40,7 @@ namespace ExchangeRates.Test.CoreTesting.FetchersTesting
         {
             var fetcher = new FixerFetcher();
 
-            var res = await fetcher.Convert("USD", "EUR", 2.4m);
+            var res = await fetcher.ConvertAsync("USD", "EUR", 2.4m);
 
             Assert.NotNull(res);
             Assert.True(res?.GetRate() > 0m);

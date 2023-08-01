@@ -11,12 +11,12 @@ namespace ExchangeRates.Core.Fetchers
 {
     public interface IFetcher
     {
-        Task<List<ISymbol>?> FetchAllSymbolsAsync();
-        Task<IConverter?> Convert(string cur1,string cur2,decimal amount);
+        Task<List<ISymbol>> FetchAllSymbolsAsync();
+        Task<IConverter> ConvertAsync(string cur1,string cur2,decimal amount);
         /// <summary>
         /// Fetch all prices(rates) based on USD
         /// </summary>
         /// <returns>ILatestPrice</returns>
-        Task<ILatestPrice?> FetchLatestPriceAsync();
+        Task<ILatestPrice> FetchLatestPriceAsync();
     }
 }
